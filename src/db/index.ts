@@ -22,6 +22,9 @@ export const pool =
   new Pool({
     connectionString: cleanDatabaseUrl,
     ssl: isLocal ? false : { rejectUnauthorized: false },
+    max: process.env.NODE_ENV === "production" ? 1 : 10,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 10000,
   });
 
 if (process.env.NODE_ENV !== "production") {

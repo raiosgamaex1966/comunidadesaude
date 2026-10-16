@@ -30,8 +30,8 @@ function requiredAdminCredentials() {
 }
 
 let seeding: Promise<void> | null = null;
+let alreadyCheckedSeed = false;
 
-// Bloqueio no banco: impede que vários processos (ex.: workers do build) semeiem ao mesmo tempo.
 async function withSeedLock<T>(fn: () => Promise<T>): Promise<T> {
   const client = await pool.connect();
   try {
@@ -42,8 +42,25 @@ async function withSeedLock<T>(fn: () => Promise<T>): Promise<T> {
   }
 }
 
-export function ensureSeeded() {
-  if (!seeding) seeding = withSeedLock(runSeed).catch((e) => { console.error("Seed failed", e); seeding = null; });
+export async function ensureSeeded() {
+  if (alreadyCheckedSeed) return;
+  if (!seeding) {
+    seeding = (async () => {
+      try {
+        const [{ value }] = await db.select({ value: count() }).from(users);
+        if (Number(value) > 0) {
+          alreadyCheckedSeed = true;
+          return;
+        }
+        await withSeedLock(runSeed);
+        alreadyCheckedSeed = true;
+      } catch (e) {
+        console.error("Seed check failed", e);
+      } finally {
+        seeding = null;
+      }
+    })();
+  }
   return seeding;
 }
 
