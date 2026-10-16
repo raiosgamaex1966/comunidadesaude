@@ -3,7 +3,7 @@ import { asc, sql } from "drizzle-orm";
 import { Trash2 } from "lucide-react";
 import { db } from "@/db";
 import { courses, trails } from "@/db/schema";
-import { deleteTrail, saveCourse, saveTrail } from "@/lib/admin-actions";
+import { deleteCourse, deleteTrail, saveCourse, saveTrail } from "@/lib/admin-actions";
 import { PageHero } from "@/components/PageHero";
 import { CourseForm } from "./CourseForm";
 
