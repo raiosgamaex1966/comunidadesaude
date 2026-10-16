@@ -18,10 +18,20 @@ export default async function AdminCourses() {
       <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
         <div className="card divide-y divide-border">
           {cs.map((c) => (
-            <Link key={c.id} href={`/admin/courses/${c.id}`} className="flex items-center gap-3 px-4 py-3 hover:bg-accent">
-              <div className="min-w-0 flex-1"><p className="truncate font-semibold">{c.title}</p><p className="text-xs text-muted-foreground">{ts.find((t) => t.id === c.trailId)?.title ?? "Sem trilha"} · {c.level} · {Number(c.lessons)} aulas · {Number(c.students)} alunos</p></div>
-              <span className={`badge ${c.status === "published" ? "border-primary/40 text-primary" : ""}`}>{c.status === "published" ? "Publicado" : c.status === "coming_soon" ? "Em breve" : "Rascunho"}</span>
-            </Link>
+            <div key={c.id} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-accent/50 transition">
+              <Link href={`/admin/courses/${c.id}`} className="min-w-0 flex-1">
+                <p className="truncate font-semibold hover:underline">{c.title}</p>
+                <p className="text-xs text-muted-foreground">{ts.find((t) => t.id === c.trailId)?.title ?? "Sem trilha"} · {c.level} · {Number(c.lessons)} aulas · {Number(c.students)} alunos</p>
+              </Link>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className={`badge ${c.status === "published" ? "border-primary/40 text-primary" : ""}`}>{c.status === "published" ? "Publicado" : c.status === "coming_soon" ? "Em breve" : "Rascunho"}</span>
+                <form action={deleteCourse.bind(null, c.id)}>
+                  <button className="btn-ghost h-8 w-8 p-0 text-destructive hover:bg-destructive/10" title="Excluir curso" aria-label="Excluir curso">
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </form>
+              </div>
+            </div>
           ))}
         </div>
         <div className="space-y-4">
