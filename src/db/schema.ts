@@ -249,3 +249,16 @@ export const examTargets = pgTable("exam_targets", {
   examDate: timestamp("exam_date"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const podcasts = pgTable("podcasts", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"),
+  audioUrl: text("audio_url").notNull(),
+  subjectReference: text("subject_reference"), // Ex: SUS, Português, Radioproteção, Enfermagem
+  courseId: integer("course_id").references(() => courses.id, { onDelete: "set null" }),
+  durationMin: integer("duration_min").default(10).notNull(),
+  coverUrl: text("cover_url"),
+  ownerUserId: integer("owner_user_id").references(() => users.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});

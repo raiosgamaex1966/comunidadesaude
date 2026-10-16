@@ -7,6 +7,7 @@ import {
   ClipboardList,
   FileText,
   GraduationCap,
+  Headphones,
   HeartPulse,
   Landmark,
   ShieldCheck,
@@ -59,6 +60,11 @@ const features = [
     title: "Biblioteca e fontes oficiais",
     text: "Centralize leis, conselhos profissionais, links, apostilas externas, referências e outros materiais de apoio aos estudos.",
     icon: FileText,
+  },
+  {
+    title: "Podcasts de matérias e temas",
+    text: "Episódios em áudio organizados por matéria para os alunos estudarem e revisarem de onde estiverem.",
+    icon: Headphones,
   },
   {
     title: "Comunidade, suporte e notificações",

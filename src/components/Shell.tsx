@@ -6,6 +6,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import {
   Home, BookOpen, Users, FileText, Newspaper, Video, GraduationCap, Bookmark, NotebookPen, Webcam,
   Download, Settings, LifeBuoy, Menu, X, Sun, Moon, Bell, Search, Shield, LayoutDashboard, HeartPulse, Target, LogOut,
+  Headphones,
 } from "lucide-react";
 import { Logo, LogoMark } from "./Logo";
 import { cn, initials } from "@/lib/utils";
@@ -15,6 +16,7 @@ const NAV = [
   { to: "/overview", label: "Início", icon: Home, group: "Sua comunidade" },
   { to: "/concursos", label: "Meu concurso", icon: Target, group: "Sua comunidade" },
   { to: "/courses", label: "Matérias", icon: BookOpen, group: "Aprender e compartilhar" },
+  { to: "/podcasts", label: "Podcasts", icon: Headphones, group: "Aprender e compartilhar" },
   { to: "/community", label: "Comunidade", icon: Users, group: "Aprender e compartilhar" },
   { to: "/materials", label: "Biblioteca", icon: FileText, group: "Aprender e compartilhar" },
   { to: "/news", label: "Atualizações", icon: Newspaper, group: "Aprender e compartilhar" },

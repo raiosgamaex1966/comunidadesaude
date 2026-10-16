@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const ITEMS = [
-  ["/admin", "Visão geral"], ["/admin/courses", "Gerir cursos"], ["/admin/materials", "Gerir materiais"], ["/admin/news", "Gerir notícias"],
+  ["/admin", "Visão geral"], ["/admin/courses", "Gerir cursos"], ["/admin/podcasts", "Gerir podcasts"], ["/admin/materials", "Gerir materiais"], ["/admin/news", "Gerir notícias"],
   ["/admin/mentorships", "Gerir mentorias"], ["/admin/students", "Alunos"], ["/admin/support", "Atendimento"], ["/admin/notifications", "Notificações"], ["/admin/site-settings", "Aparência"],
 ];
 

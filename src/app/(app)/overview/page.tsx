@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { desc, eq, gte, and } from "drizzle-orm";
-import { ArrowRight, BookOpen, CheckCircle2, Flame, Newspaper, PlayCircle, Radio, ShieldCheck, Target, Users, Video } from "lucide-react";
+import { ArrowRight, BookOpen, CheckCircle2, Flame, Headphones, Newspaper, PlayCircle, Radio, ShieldCheck, Target, Users, Video } from "lucide-react";
 import { db } from "@/db";
-import { mentorships, news, posts, users, lessonProgress } from "@/db/schema";
+import { mentorships, news, podcasts, posts, users, lessonProgress } from "@/db/schema";
 import { requireUser } from "@/lib/auth";
 import { getContinueLesson, getCoursesWithProgress, getSettings } from "@/lib/queries";
 import { CourseCard } from "@/components/CourseCard";
@@ -16,12 +16,13 @@ export const metadata = { title: "Início" };
 export default async function OverviewPage() {
   const user = await requireUser();
   const [allCourses, cont, settings] = await Promise.all([getCoursesWithProgress(user.id), getContinueLesson(user.id), getSettings()]);
-  const [ment, latestNews, latestPosts, weekly] = await Promise.all([
+  const [ment, latestNews, latestPosts, weekly, latestPodcasts] = await Promise.all([
     db.select().from(mentorships).orderBy(desc(mentorships.scheduledAt)).limit(3),
     db.select({ id: news.id, title: news.title, kind: news.kind, createdAt: news.createdAt }).from(news).orderBy(desc(news.createdAt)).limit(3),
     db.select({ id: posts.id, content: posts.content, topic: posts.topic, createdAt: posts.createdAt, author: { fullName: users.fullName, avatarUrl: users.avatarUrl } })
       .from(posts).innerJoin(users, eq(posts.userId, users.id)).orderBy(desc(posts.createdAt)).limit(3),
     db.select({ id: lessonProgress.id }).from(lessonProgress).where(and(eq(lessonProgress.userId, user.id), gte(lessonProgress.completedAt, new Date(Date.now() - 7 * 86400000)))),
+    db.select().from(podcasts).orderBy(desc(podcasts.createdAt)).limit(3),
   ]);
 
   const published = allCourses.filter((c) => c.status === "published");
@@ -148,7 +149,18 @@ export default async function OverviewPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{legislation.map((c) => <CourseCard key={c.id} c={c} />)}</div>
       </Section>
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <Panel icon={<Headphones className="h-4 w-4" />} title="Podcasts de estudo" to="/podcasts">
+          {latestPodcasts.length === 0 && <p className="text-sm text-muted-foreground">Nenhum episódio por enquanto.</p>}
+          {latestPodcasts.map((p) => (
+            <Link key={p.id} href="/podcasts" className="block rounded-xl px-3 py-2 hover:bg-accent">
+              <p className="text-sm font-semibold truncate">{p.title}</p>
+              <p className="flex items-center gap-1 text-xs text-muted-foreground">
+                <span className="text-primary font-medium">{p.subjectReference || "Geral"}</span> · {p.durationMin} min
+              </p>
+            </Link>
+          ))}
+        </Panel>
         <Panel icon={<Video className="h-4 w-4" />} title="Próximos encontros" to="/mentorships">
           {ment.length === 0 && <p className="text-sm text-muted-foreground">Nenhum encontro por agora.</p>}
           {ment.map((m) => (
@@ -158,7 +170,7 @@ export default async function OverviewPage() {
             </Link>
           ))}
         </Panel>
-        <Panel icon={<Newspaper className="h-4 w-4" />} title="Dicas e atualizações" to="/news">
+        <Panel icon={<Newspaper className="h-4 w-4" />} title="Dicas e notícias" to="/news">
           {latestNews.length === 0 && <p className="text-sm text-muted-foreground">Sem novidades por enquanto.</p>}
           {latestNews.map((n) => (
             <Link key={n.id} href={`/news/${n.id}`} className="block rounded-xl px-3 py-2 hover:bg-accent">

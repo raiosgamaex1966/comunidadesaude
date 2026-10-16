@@ -36,19 +36,7 @@ export function LoginForm() {
         <button className="btn-primary w-full">Entrar na plataforma</button>
       </div>
       <p className="mt-5 text-center text-xs leading-relaxed text-muted-foreground">Acesso restrito a membros autorizados da comunidade.</p>
-      <div className="mt-4 rounded-xl border border-primary/25 bg-primary/8 p-4">
-        <p className="text-xs font-bold uppercase tracking-wider text-primary">Acessos de teste</p>
-        <p className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Administrador</p>
-        <p className="flex flex-wrap items-center gap-x-1.5 text-xs"><code className="rounded bg-background px-1.5 py-0.5">robsoncordeiro1966@gmail.com</code><span>/</span><code className="rounded bg-background px-1.5 py-0.5">Rcs@2026</code></p>
-        <p className="mt-2.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Alunos</p>
-        <div className="mt-1 space-y-1.5 text-xs">
-          <p className="flex flex-wrap items-center gap-x-1.5"><span className="text-muted-foreground">Enfermagem:</span><code className="rounded bg-background px-1.5 py-0.5">ana@exemplo.com</code><span>/</span><code className="rounded bg-background px-1.5 py-0.5">Enfermagem@2026</code></p>
-          <p className="flex flex-wrap items-center gap-x-1.5"><span className="text-muted-foreground">Téc. Enfermagem:</span><code className="rounded bg-background px-1.5 py-0.5">joao@exemplo.com</code><span>/</span><code className="rounded bg-background px-1.5 py-0.5">TecEnf@2026</code></p>
-          <p className="flex flex-wrap items-center gap-x-1.5"><span className="text-muted-foreground">Radiologia:</span><code className="rounded bg-background px-1.5 py-0.5">carla@exemplo.com</code><span>/</span><code className="rounded bg-background px-1.5 py-0.5">Radiologia@2026</code></p>
-        </div>
-        <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">Remova este bloco antes de abrir a plataforma ao público.</p>
-      </div>
-      <Link href="/" className="mt-4 block text-center text-xs text-muted-foreground hover:text-foreground">← Voltar para a página inicial</Link>
+      <Link href="/" className="mt-6 block text-center text-xs text-muted-foreground hover:text-foreground">← Voltar para a página inicial</Link>
     </form>
   );
 }

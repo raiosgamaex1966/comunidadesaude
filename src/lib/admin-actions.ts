@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/db";
-import { courses, lessons, materials, mentorships, modules, news, notifications, siteSettings, trails, users } from "@/db/schema";
+import { courses, lessons, materials, mentorships, modules, news, notifications, podcasts, siteSettings, trails, users } from "@/db/schema";
 import { hashPassword } from "@/lib/auth";
 import { PROFESSIONS } from "@/lib/concursos";
 import { requireAdmin } from "@/lib/auth";
@@ -230,5 +230,43 @@ export async function saveSettings(fd: FormData) {
     await db.insert(siteSettings).values({ key, value }).onConflictDoUpdate({ target: siteSettings.key, set: { value } });
   }
   revalidatePath("/admin/site-settings"); revalidatePath("/overview"); revalidatePath("/support");
+}
+
+// Podcasts
+export async function savePodcast(fd: FormData) {
+  const admin = await requireAdmin();
+  const id = n(fd, "id");
+  const title = s(fd, "title");
+  const audioUrl = s(fd, "audioUrl");
+  if (!title || !audioUrl) return;
+
+  const data = {
+    title,
+    description: s(fd, "description") || null,
+    audioUrl,
+    subjectReference: s(fd, "subjectReference") || null,
+    courseId: n(fd, "courseId") || null,
+    durationMin: n(fd, "durationMin") || 10,
+    coverUrl: s(fd, "coverUrl") || null,
+  };
+
+  if (id) {
+    await db.update(podcasts).set(data).where(eq(podcasts.id, id));
+  } else {
+    await db.insert(podcasts).values({ ...data, ownerUserId: admin.id });
+    await notifyAll(`Novo Podcast: ${title}`, "/podcasts", admin.id);
+  }
+
+  revalidatePath("/admin/podcasts");
+  revalidatePath("/podcasts");
+  revalidatePath("/overview");
+}
+
+export async function deletePodcast(id: number) {
+  await requireAdmin();
+  await db.delete(podcasts).where(eq(podcasts.id, id));
+  revalidatePath("/admin/podcasts");
+  revalidatePath("/podcasts");
+  revalidatePath("/overview");
 }
 
