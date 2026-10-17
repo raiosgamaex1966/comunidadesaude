@@ -14,17 +14,26 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
   openGraph: {
-    title: "RCS Prime Comunity — Concursos da Saúde",
+    title: "Comunidade Saúde — Sua Saúde, Nossa Comunidade",
     description: "Preparação organizada para concursos da saúde: Enfermagem, Técnico de Enfermagem e Radiologia Médica. Matérias por edital, plano individual, comunidade e podcasts.",
     url: "https://rcscomunidadesaude.vercel.app",
-    siteName: "RCS Prime Comunity",
+    siteName: "Comunidade Saúde",
     locale: "pt_BR",
     type: "website",
+    images: [
+      {
+        url: "https://rcscomunidadesaude.vercel.app/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Comunidade Saúde — Sua Saúde, Nossa Comunidade",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "RCS Prime Comunity — Concursos da Saúde",
+    title: "Comunidade Saúde — Sua Saúde, Nossa Comunidade",
     description: "Preparação organizada para concursos da saúde: Enfermagem, Técnico de Enfermagem e Radiologia Médica. Matérias por edital, plano individual, comunidade e podcasts.",
+    images: ["https://rcscomunidadesaude.vercel.app/og-image.png"],
   },
 };
 
