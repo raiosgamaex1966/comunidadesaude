@@ -3,8 +3,38 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: { default: "RCS Prime Comunity", template: "%s — RCS Prime Comunity" },
-  description: "RCS Prime Comunity — Preparação para concursos públicos da área da saúde.",
+  metadataBase: new URL("https://rcscomunidadesaude.vercel.app"),
+  title: { default: "RCS Prime Comunity — Concursos da Saúde", template: "%s — RCS Prime Comunity" },
+  description: "Preparação organizada para concursos da saúde: Enfermagem, Técnico de Enfermagem e Radiologia Médica. Matérias por edital, plano individual, comunidade e podcasts.",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.png", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
+  openGraph: {
+    title: "RCS Prime Comunity — Concursos da Saúde",
+    description: "Preparação de alta performance em Enfermagem e Radiologia Médica: matérias por edital, legislação, comunidade oficial e podcasts de estudo.",
+    url: "https://rcscomunidadesaude.vercel.app",
+    siteName: "RCS Prime Comunity",
+    locale: "pt_BR",
+    type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "RCS Prime Comunity — Enfermagem e Radiologia Médica",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "RCS Prime Comunity — Concursos da Saúde",
+    description: "Preparação de alta performance em Enfermagem e Radiologia Médica: matérias por edital, legislação, comunidade oficial e podcasts de estudo.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
