@@ -15,25 +15,16 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "RCS Prime Comunity — Concursos da Saúde",
-    description: "Preparação de alta performance em Enfermagem e Radiologia Médica: matérias por edital, legislação, comunidade oficial e podcasts de estudo.",
+    description: "Preparação organizada para concursos da saúde: Enfermagem, Técnico de Enfermagem e Radiologia Médica. Matérias por edital, plano individual, comunidade e podcasts.",
     url: "https://rcscomunidadesaude.vercel.app",
     siteName: "RCS Prime Comunity",
     locale: "pt_BR",
     type: "website",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "RCS Prime Comunity — Enfermagem e Radiologia Médica",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "RCS Prime Comunity — Concursos da Saúde",
-    description: "Preparação de alta performance em Enfermagem e Radiologia Médica: matérias por edital, legislação, comunidade oficial e podcasts de estudo.",
-    images: ["/og-image.png"],
+    description: "Preparação organizada para concursos da saúde: Enfermagem, Técnico de Enfermagem e Radiologia Médica. Matérias por edital, plano individual, comunidade e podcasts.",
   },
 };
 
