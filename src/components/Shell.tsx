@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   Home, BookOpen, Users, FileText, Newspaper, Video, GraduationCap, Bookmark, NotebookPen, Webcam,
   Download, Settings, LifeBuoy, Menu, X, Sun, Moon, Bell, Search, Shield, LayoutDashboard, HeartPulse, Target, LogOut,
@@ -39,6 +39,49 @@ export function Shell({ user, unread, notifs, children }: { user: SessionUser; u
   const [open, setOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [theme, setTheme] = useState<"dark" | "light">("light");
+  const [unreadCount, setUnreadCount] = useState(unread);
+  const [items, setItems] = useState<Notif[]>(notifs);
+  const notifRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => setUnreadCount(unread), [unread]);
+  useEffect(() => setItems(notifs), [notifs]);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
+        setNotifOpen(false);
+      }
+    }
+    if (notifOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [notifOpen]);
+
+  async function markAllAsRead() {
+    if (unreadCount > 0 || items.some((n) => !n.read)) {
+      setUnreadCount(0);
+      setItems((prev) => prev.map((item) => ({ ...item, read: true })));
+      try {
+        await fetch("/api/notifications/read", {
+          method: "POST",
+          headers: { Accept: "application/json" },
+        });
+      } catch (e) {
+        console.error("Erro ao marcar notificações como lidas", e);
+      }
+    }
+  }
+
+  function handleToggleNotif() {
+    const next = !notifOpen;
+    setNotifOpen(next);
+    if (next && (unreadCount > 0 || items.some((n) => !n.read))) {
+      markAllAsRead();
+    }
+  }
 
   useEffect(() => {
     const t = (localStorage.getItem("rcs-theme") as "dark" | "light") || "light";
@@ -149,35 +192,84 @@ export function Shell({ user, unread, notifs, children }: { user: SessionUser; u
                 <input name="q" placeholder="Buscar matérias" className="flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground" />
               </div>
             </form>
-            <div className="relative ml-auto sm:ml-0">
-              <button className="btn-ghost relative p-2" onClick={() => setNotifOpen((o) => !o)} aria-label="Notificações" aria-haspopup="menu" aria-expanded={notifOpen}>
+            <div ref={notifRef} className="relative ml-auto sm:ml-0">
+              <button
+                type="button"
+                className="btn-ghost relative p-2"
+                onClick={handleToggleNotif}
+                aria-label="Notificações"
+                aria-haspopup="menu"
+                aria-expanded={notifOpen}
+              >
                 <Bell className="h-5 w-5" />
-                {unread > 0 && (
-                  <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
-                    {unread}
+                {unreadCount > 0 && (
+                  <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground shadow-sm animate-pulse">
+                    {unreadCount > 9 ? "9+" : unreadCount}
                   </span>
                 )}
               </button>
               {notifOpen && (
-                <div className="card absolute right-0 mt-2 w-80 overflow-hidden shadow-xl">
-                  <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
-                    <p className="text-sm font-semibold">Notificações</p>
-                    {unread > 0 && (
-                      <form action="/api/notifications/read" method="post">
-                        <button className="text-xs font-semibold text-primary">Marcar todas</button>
-                      </form>
+                <div className="card absolute right-0 mt-2 w-[calc(100vw-2rem)] sm:w-84 max-w-sm overflow-hidden shadow-2xl z-50 border border-border bg-card">
+                  <div className="flex items-center justify-between border-b border-border px-4 py-3 bg-muted/30">
+                    <div className="flex items-center gap-2">
+                      <Bell className="h-4 w-4 text-primary" />
+                      <p className="text-sm font-bold text-foreground">Notificações</p>
+                    </div>
+                    {items.some((n) => !n.read) && (
+                      <button
+                        type="button"
+                        onClick={markAllAsRead}
+                        className="text-xs font-semibold text-primary hover:underline cursor-pointer"
+                      >
+                        Marcar todas como lidas
+                      </button>
                     )}
                   </div>
-                  <ul className="max-h-80 overflow-y-auto">
-                    {notifs.length === 0 && <li className="px-4 py-6 text-center text-sm text-muted-foreground">Sem notificações</li>}
-                    {notifs.map((n) => (
-                      <li key={n.id} className={cn("border-b border-border px-4 py-3 last:border-0", !n.read && "bg-primary/5")}>
-                        <Link href={n.link ?? "#"} onClick={() => setNotifOpen(false)}>
-                          <p className="text-sm font-semibold">{n.title}</p>
-                          {n.body && <p className="text-xs text-muted-foreground">{n.body}</p>}
-                        </Link>
+                  <ul className="max-h-80 overflow-y-auto divide-y divide-border">
+                    {items.length === 0 ? (
+                      <li className="px-4 py-8 text-center">
+                        <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-accent text-primary">
+                          <Bell className="h-5 w-5 opacity-70" />
+                        </div>
+                        <p className="text-sm font-semibold text-foreground">Tudo em dia!</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">Você não possui novas notificações.</p>
                       </li>
-                    ))}
+                    ) : (
+                      items.map((n) => (
+                        <li
+                          key={n.id}
+                          className={cn(
+                            "p-3.5 transition hover:bg-accent/50",
+                            !n.read ? "bg-primary/5 font-medium" : "opacity-85",
+                          )}
+                        >
+                          <Link
+                            href={n.link ?? "#"}
+                            onClick={() => setNotifOpen(false)}
+                            className="block group"
+                          >
+                            <div className="flex items-start gap-2.5">
+                              <span
+                                className={cn(
+                                  "mt-1.5 h-2 w-2 rounded-full shrink-0",
+                                  !n.read ? "bg-primary" : "bg-transparent",
+                                )}
+                              />
+                              <div className="min-w-0 flex-1">
+                                <p className="text-sm font-semibold text-foreground group-hover:text-primary transition line-clamp-2">
+                                  {n.title}
+                                </p>
+                                {n.body && (
+                                  <p className="text-xs text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
+                                    {n.body}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </Link>
+                        </li>
+                      ))
+                    )}
                   </ul>
                 </div>
               )}
